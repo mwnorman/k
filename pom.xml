@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.ryo</groupId>
+    <artifactId>microprofile</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Roll-Your-Own microprofile project</name>
+    <description>Roll-Your-Own microprofile project</description>
+
+    <!-- why is everything a property? Because values in <version> stanzas become
+        part of Maven's immutable Model object and then their contents can't be changed.
+        However, if the value is set in a user-defined property BEFORE the Model
+        object is created, then it is possible to do: mvn clean compile -Dfoo.bar.version=1.2.3
+        in order to (say for example) test out a newer version of some dependency
+        without having to change the pom.xml.
+    -->
+    <properties>
+        <!-- maven properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <project.source.level>${java.version}</project.source.level>
+        <project.target.level>${java.version}</project.target.level>
+        <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
+
+        <!-- Shared version number properties -->
+        <slf4j.version>1.7.25</slf4j.version>
+        <logback.version>1.2.3</logback.version>
+        <org.eclipse.microprofile.version>1.3</org.eclipse.microprofile.version>
+
+    </properties>
+    
+    <repositories>
+        <repository>
+            <id>version99</id>
+            <!-- this repository serves empty artifacts for the purpose of managing global exclusions -->
+            <url>http://version99.qos.ch/</url>
+        </repository>
+    </repositories>
+ 
+    <dependencyManagement>
+        <!-- SLF4j:declaring version 99-empty of commons-logging will direct all
+            transitive dependencies for commons-logging to import version 99-empty, thus
+            nicely addressing the commons-logging exclusion problem
+        -->
+        <dependencies>
+            <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>${version99.qos.ch.version}</version>
+            </dependency>
+            <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                    <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                    <version>${slf4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- These dependencies are special in that they must be loaded FIRST -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version><!--$NO-MVN-MAN-VER$-->
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <version>${org.eclipse.microprofile.version}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                    <configuration>
+                        <source>${project.source.level}</source>
+                        <target>${project.target.level}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
